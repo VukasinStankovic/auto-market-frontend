@@ -184,7 +184,7 @@ function generateYears(startYear: number): number[] {
     <div class="row row-cols-1 row-cols-md-3 g-4">
       <div class="col" v-for="v in vehicles">
         <div class="card mb-3" style="max-width: 540px;">
-          <img src="https://gcdn.polovniautomobili.com/user-images/thumbs/2386/23860221/aed29c6d0c00-370x278-dw.jpg"
+          <img :src="v.vehicleImages[0].image.imageUrl"
                class="card-img-top" alt="...">
           <div class="card-body border-bottom">
             <h5 class="card-title">{{ v.name }}</h5>

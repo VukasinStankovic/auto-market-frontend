@@ -46,7 +46,10 @@ export interface VehicleModel {
     vehicleEquipments: {
         equipmentId: number
     },
-    vehicleImages: {
-        imageId: number
-    }
+    "vehicleImages": {
+        "imageId": "number",
+        "image": {
+            "imageUrl": "string"
+        }
+    }[]
 }
