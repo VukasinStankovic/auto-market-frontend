@@ -44,12 +44,15 @@ export interface VehicleModel {
         username: string,
     },
     vehicleEquipments: {
-        equipmentId: number
-    },
+        equipmentId: number,
+        equipment: {
+            name: string
+        },
+    }[],
     "vehicleImages": {
-        "imageId": "number",
+        "imageId": number,
         "image": {
-            "imageUrl": "string"
+            "imageUrl": string
         }
     }[]
 }

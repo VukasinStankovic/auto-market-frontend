@@ -3,9 +3,12 @@
 import {VehicleService} from "@/services/vehicle.service";
 import type {VehicleModel} from "@/models/vehicle.model";
 import {ref} from "vue";
+import {useRouter} from "vue-router";
+import {AuthService} from "@/services/auth.service";
 
 // TODO: za selektovanu marku prikazati modele
 
+const router = useRouter();
 const vehicles = ref<VehicleModel[]>([]);
 const brands = ref<string[]>([]);
 const models = ref<string[]>([]);
@@ -23,7 +26,6 @@ const selectedToYear = ref<number>(null);
 const selectedPrice = ref<string>(null);
 const selectedBody = ref<string>(null);
 const selectedFuelType = ref<string>(null);
-
 
 VehicleService.getAllVehicles().then(rsp => {
   vehicles.value = rsp.data;
@@ -69,14 +71,26 @@ function generateYears(startYear: number): number[] {
   }
   return years.reverse();
 }
+
+function carDetails(id: number) {
+  console.log(router);
+  router.push({
+    path: `/vehicle-details/${id}`,
+  });
+}
+
 </script>
 
 <style>
+.cursor {
+  cursor: pointer;
+}
 </style>
 
-<template>
-  <div class="container pt-5">
-    <div class="card text-center mb-5">
+<template v-if="AuthService.hasAuth()">
+  <div class="container pt-4" v-if="vehicles">
+    <!--  VEHICLE TABS  -->
+    <div class="card text-center mb-5 cursor">
       <div class="card-header">
         <ul class="nav nav-tabs card-header-tabs ">
           <li class="nav-item">
@@ -116,7 +130,7 @@ function generateYears(startYear: number): number[] {
       <div class="card-body">
         <div class="row g-3">
 
-          <!-- 1. red -->
+          <!-- 1. row -->
           <div class="col-md-4">
             <select class="form-select" v-model="selectedBrand"
                     @change="updateModels">
@@ -145,7 +159,7 @@ function generateYears(startYear: number): number[] {
             </button>
           </div>
 
-          <!-- 2. red -->
+          <!-- 2. row -->
           <div class="col-md-2">
             <select class="form-select" v-model="selectedFromYear">
               <option v-if="selectedFromYear == null" :value="null" hidden selected disabled id="default">Godište od
@@ -182,10 +196,10 @@ function generateYears(startYear: number): number[] {
 
 
     <div class="row row-cols-1 row-cols-md-3 g-4">
-      <div class="col" v-for="v in vehicles">
-        <div class="card mb-3" style="max-width: 540px;">
+      <div class="col-xl-3 col-md-6 col-xl-4 col-xxl-3" v-for="v in vehicles">
+        <div class="card mb-3 change-cursor" @click="carDetails(v.vehicleId)">
           <img :src="v.vehicleImages[0].image.imageUrl"
-               class="card-img-top" alt="...">
+               class="card-img-top fixed-height" alt="...">
           <div class="card-body border-bottom">
             <h5 class="card-title">{{ v.name }}</h5>
             <p class="card-text fw-bold">{{ v.price }} €</p>
@@ -213,4 +227,17 @@ function generateYears(startYear: number): number[] {
       </div>
     </div>
   </div>
+  <div v-else>Loading vehicles...</div>
 </template>
+
+<style scoped>
+.fixed-height {
+  height: 200px;
+  width: auto;
+  object-fit: cover;
+}
+
+.change-cursor {
+  cursor: pointer;
+}
+</style>
