@@ -1,8 +1,16 @@
 <script setup lang="ts">
 import {useRouter} from "vue-router";
 import {AuthService} from "@/services/auth.service";
+import {ref} from "vue";
 
 const router = useRouter();
+const darkMode = ref<boolean>(false);
+
+function toggleDarkMode() {
+  const htmlTag = document.querySelector('html');
+  htmlTag.setAttribute('data-bs-theme', darkMode.value ? 'dark' : 'light');
+  console.log("darkMode value: ", darkMode.value);
+}
 
 function logout() {
   AuthService.clearAuth();
@@ -49,6 +57,10 @@ function logout() {
           Postavi oglas
         </button>
       </div>
+    </div>
+    <div class="form-check form-switch">
+      <input class="form-check-input text-danger" type="checkbox" role="switch" id="flexSwitchCheckDefault" v-model="darkMode" @change="toggleDarkMode">
+      <label class="form-check-label me-5" for="flexSwitchCheckDefault">Promeni temu</label>
     </div>
   </nav>
   <RouterView/>
