@@ -8,7 +8,7 @@ const route = useRoute();
 const router = useRouter();
 const id = Number.parseInt(route.params.id as any);
 
-const vehicle = ref<VehicleModel[]>([]);
+const vehicle = ref<VehicleModel>();
 VehicleService.getVehicleById(id).then(rsp => {
   vehicle.value = rsp.data;
 });
@@ -16,15 +16,15 @@ VehicleService.getVehicleById(id).then(rsp => {
 
 <template>
   <!--  TITLE  -->
-  <div class="container pt-4">
+  <div class="container pt-4" v-if="vehicle">
     <div class=" text-center mb-4">
-      <h1 class="text-warning">{{ vehicle[0]?.name }}</h1>
+      <h1 class="text-warning">{{ vehicle.name }}</h1>
     </div>
 
     <!--  CAROUSEL  -->
     <div id="carouselExample" class="carousel slide" v-if="vehicle">
       <div class="carousel-inner">
-        <div v-for="(image, index) in vehicle[0]?.vehicleImages" :key="index"
+        <div v-for="(image, index) in vehicle.vehicleImages" :key="index"
              :class="{'carousel-item': true, 'active': index === 0}">
           <img :src="image.image.imageUrl" class="w-100 fixed-height" alt="...">
         </div>
@@ -50,36 +50,35 @@ VehicleService.getVehicleById(id).then(rsp => {
               <div class="col border-end border-warning">
                 <h5 class="text-center my-3">Opšte informacije</h5>
                 <p class="card-text m-0 d-flex justify-content-between border-bottom py-2">Marka: <span class="fw-bold">{{
-                    vehicle[0]?.model.brand.name
+                    vehicle.model.brand.name
                   }}</span></p>
                 <p class="card-text m-0 d-flex justify-content-between border-bottom py-2">Model: <span class="fw-bold">{{
-                    vehicle[0]?.model.name
+                    vehicle.model.name
                   }}</span></p>
                 <p class="card-text m-0 d-flex justify-content-between border-bottom py-2">Godište: <span
-                    class="fw-bold">{{ vehicle[0]?.productionYear }}.</span></p>
+                    class="fw-bold">{{ vehicle.productionYear }}.</span></p>
                 <p class="card-text m-0 d-flex justify-content-between border-bottom py-2">Kilometraža: <span
-                    class="fw-bold">{{ vehicle[0]?.mileage }}</span></p>
+                    class="fw-bold">{{ vehicle.mileage }}</span></p>
                 <p class="card-text m-0 d-flex justify-content-between border-bottom py-2">Karoserija: <span
-                    class="fw-bold">{{ vehicle[0]?.body.name }}</span></p>
+                    class="fw-bold">{{ vehicle.body.name }}</span></p>
                 <p class="card-text m-0 d-flex justify-content-between border-bottom py-2">Gorivo: <span
-                    class="fw-bold">{{ vehicle[0]?.fuelType.name }}</span></p>
+                    class="fw-bold">{{ vehicle.fuelType.name }}</span></p>
                 <p class="card-text m-0 d-flex justify-content-between border-bottom py-2">Snaga motora: <span
-                    class="fw-bold">{{ vehicle[0]?.kilowatts }}/{{ vehicle[0]?.horsepower }} (kW/KS)</span></p>
+                    class="fw-bold">{{ vehicle.kilowatts }}/{{ vehicle.horsepower }} (kW/KS)</span></p>
               </div>
               <div class="col">
                 <h5 class="text-center my-3">Dodatne informacije</h5>
                 <p class="card-text m-0 d-flex justify-content-between border-bottom py-2">Menjač: <span
-                    class="fw-bold">{{ vehicle[0]?.transmission.name }}</span></p>
+                    class="fw-bold">{{ vehicle.transmission.name }}</span></p>
                 <p class="card-text m-0 d-flex justify-content-between border-bottom py-2">Broj vrata: <span
-                    class="fw-bold">{{ vehicle[0]?.numberOfDoors }}</span></p>
+                    class="fw-bold">{{ vehicle.numberOfDoors }}</span></p>
                 <p class="card-text m-0 d-flex justify-content-between border-bottom py-2">Broj sedišta: <span
-                    class="fw-bold">{{ vehicle[0]?.numberOfSeats }}</span></p>
+                    class="fw-bold">{{ vehicle.numberOfSeats }}</span></p>
                 <p class="card-text m-0 d-flex justify-content-between border-bottom py-2">Boja: <span class="fw-bold">{{
-                    vehicle[0]?.color.name
+                    vehicle.color.name
                   }}</span></p>
               </div>
             </div>
-            <!--          <p class="card-text"><small>Last updated 3 mins ago</small></p>-->
           </div>
         </div>
       </div>
@@ -88,12 +87,15 @@ VehicleService.getVehicleById(id).then(rsp => {
           <div class="card-body">
             <h3 class="card-title text-center border-bottom border-warning pb-3">Oprema</h3>
             <div class="row row-cols-1 row-cols-lg-3 row-cols-xl-4 g-4">
-              <p v-for="eq in vehicle[0]?.vehicleEquipments">{{ eq.equipment.name}}</p>
+              <p v-for="eq in vehicle.vehicleEquipments">{{ eq.equipment.name }}</p>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
+  <div class="container" v-else>
+    <p>The car is being loaded</p>
   </div>
 </template>
 

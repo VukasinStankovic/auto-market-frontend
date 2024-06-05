@@ -19,6 +19,13 @@ export async function login(username: string, password: string) {
             username: username,
             password: password
         }
+    });
+}
+export async function useAxiosWithoutAuthorisation(path: string, method = 'get', payload = {}){
+    return await client.request({
+        url: path,
+        method: method,
+        data: payload
     })
 }
 
@@ -39,44 +46,46 @@ export async function useAxios(path: string, method = 'get', payload = {}) {
     } catch (e) {
         rsp = (e as AxiosError).response as AxiosResponse;
     }
+    // TODO: proveriti
+    if (rsp) {
+        if (rsp.status == 401) {
+            window.location.href = '/login';
+        }
 
-    if (rsp == undefined || rsp.status == 401) {
-        window.location.href = '/login';
-    }
+        if (rsp.status == 403) {
+            try {
+                const token = await client.request({
+                    url: '/user/refresh',
+                    method: 'post',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${AuthService.getRefreshToken()}`
+                    },
+                });
 
-    if (rsp.status == 403) {
-        try {
-            const token = await client.request({
-                url: '/user/refresh',
-                method: 'post',
-                headers: {
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${AuthService.getRefreshToken()}`
-                },
-            });
+                AuthService.saveAuth(token.data);
 
-            AuthService.saveAuth(token.data);
-
-            return await client.request({
-                url: path,
-                method: method,
-                headers: {
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${AuthService.getAccessToken()}`
-                },
-                data: payload
-            });
-        } catch (err) {
-            {
-                console.log(err);
-                AuthService.clearAuth();
-                throw new Error('REFRESH_FAILED');
+                return await client.request({
+                    url: path,
+                    method: method,
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${AuthService.getAccessToken()}`
+                    },
+                    data: payload
+                });
+            } catch (err) {
+                {
+                    console.log(err);
+                    AuthService.clearAuth();
+                    throw new Error('REFRESH_FAILED');
+                }
             }
         }
-    }
 
-    if (rsp.status == 404) {
-        throw new Error('NOT_FOUND');
+        if (rsp.status == 404) {
+            throw new Error('NOT_FOUND');
+        }
     }
 
     return rsp;

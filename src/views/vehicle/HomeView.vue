@@ -4,7 +4,6 @@ import {VehicleService} from "@/services/vehicle.service";
 import type {VehicleModel} from "@/models/vehicle.model";
 import {ref} from "vue";
 import {useRouter} from "vue-router";
-import {AuthService} from "@/services/auth.service";
 
 // TODO: za selektovanu marku prikazati modele
 
@@ -73,7 +72,6 @@ function generateYears(startYear: number): number[] {
 }
 
 function carDetails(id: number) {
-  console.log(router);
   router.push({
     path: `/vehicle-details/${id}`,
   });
@@ -87,7 +85,7 @@ function carDetails(id: number) {
 }
 </style>
 
-<template v-if="AuthService.hasAuth()">
+<template>
   <div class="container pt-4" v-if="vehicles">
     <!--  VEHICLE TABS  -->
     <div class="card text-center mb-5 cursor">

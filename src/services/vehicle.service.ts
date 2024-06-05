@@ -1,12 +1,12 @@
-import {useAxios} from "@/services/main.service";
+import {useAxios, useAxiosWithoutAuthorisation} from "@/services/main.service";
 
 export class VehicleService{
     static async getAllVehicles(){
-        return await useAxios('/vehicle')
+        return await useAxiosWithoutAuthorisation('/vehicle')
     }
 
     static async getVehicleById(id){
-        return await useAxios('/vehicle/' + id)
+        return await useAxiosWithoutAuthorisation('/vehicle/' + id)
     }
 }
 
