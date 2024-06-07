@@ -216,7 +216,7 @@ function applyFilters() {
         <div class="card mb-3 change-cursor h-100" @click="carDetails(v.vehicleId)">
           <img :src="v.vehicleImages[0].image.imageUrl"
                class="card-img-top fixed-height" alt="...">
-          <div class="card-body border-bottom pb-0">
+          <div class="card-body border-bottom pb-0 p-2">
             <h5 class="card-title">{{ v.name }}</h5>
             <p class="card-text fw-bold">{{ v.price }} €</p>
           </div>
